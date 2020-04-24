@@ -9,14 +9,14 @@ def analyze(entire_gpa, target_gpa):
     print(entire_gpa_list)
     entire_gpa_list.remove('')
     entire_gpa_list = list(map(float, entire_gpa_list))
-    entire_gpa_list.sort()
+    entire_gpa_list.sort(reverse=True)
     print(entire_gpa_list)
-    print('entire : ', entire_gpa, 'target:', target_gpa)
+    print('entire : ', entire_gpa_list, 'target:', target_gpa)
     
     data = {
         'index' : entire_gpa_list.index(float(target_gpa)) + 1,
         'applicants_number' : len(entire_gpa_list),
-        'average_gpa' : sum(entire_gpa_list, 0.0) / len(entire_gpa_list)
+        'average_gpa' : round(sum(entire_gpa_list, 0.0) / len(entire_gpa_list),2)
     }
     return data
 
@@ -101,7 +101,7 @@ def Apply(request):
     user.apply_count += 1
 
     # average_gpa = request.Post['average_gpa']
-    average_gpa = '3.75'
+    average_gpa = '2.95'
 
     # apply_major = request.Post['apply_major']
     apply_major = 'philosophy'
