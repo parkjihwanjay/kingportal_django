@@ -6,12 +6,9 @@ from .models import User, ApplyList
 # Create your views here.
 def analyze(entire_gpa, target_gpa):
     entire_gpa_list = entire_gpa.split(',')
-    print(entire_gpa_list)
     entire_gpa_list.remove('')
     entire_gpa_list = list(map(float, entire_gpa_list))
     entire_gpa_list.sort(reverse=True)
-    print(entire_gpa_list)
-    print('entire : ', entire_gpa_list, 'target:', target_gpa)
     
     data = {
         'index' : entire_gpa_list.index(float(target_gpa)) + 1,
@@ -114,10 +111,7 @@ def Apply(request):
     user.save()
 
     entire_gpa = getattr(apply_list, apply_major)
-    index = analyze(entire_gpa.strip(), average_gpa)
-    data = {
-        'index' : index,
-    }
+    data = analyze(entire_gpa.strip(), average_gpa)
     return JsonResponse(data, status=200)
 
 
