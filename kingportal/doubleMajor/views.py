@@ -105,13 +105,16 @@ def Apply(request):
 
     apply_list = ApplyList.objects.get()
     current_value = getattr(apply_list, apply_major)
-    setattr(apply_list, apply_major, current_value + f'{average_gpa},')
+
+    entire_gpa = current_value + f'{average_gpa},'
+    # entire_gpa = getattr(apply_list, apply_major)
+
+    setattr(apply_list, apply_major, entire_gpa)
+    data = analyze(entire_gpa.strip(), average_gpa)
 
     apply_list.save()
     user.save()
 
-    entire_gpa = getattr(apply_list, apply_major)
-    data = analyze(entire_gpa.strip(), average_gpa)
     return JsonResponse(data, status=200)
 
 
