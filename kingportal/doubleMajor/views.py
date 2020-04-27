@@ -1,14 +1,17 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseNotFound, JsonResponse
 from .models import User, ApplyList
+from django.views.decorators.csrf import csrf_exempt
 import json
 # apply_list = ApplyList.objects.create()
 # apply_list.save()
 # Create your views here.
+@csrf_exempt
 def Test(request):
-    # student_id = request.POST['student_id']
+    print(request.POST)
+    student_id = request.POST['student_id']
     data = {
-        'student_id' : request.POST['student_id'],
+        'student_id' : student_id,
     }
     return JsonResponse(data, status=200)
 
@@ -74,6 +77,7 @@ def analyze(entire_student_info, target_student_info):
     print('entier_student_info :', entire_student_info)
     return data, entire_student_info
 
+@csrf_exempt
 def Login(request):
     # user = User(student_id=request.Post['kingBB'])
     # check_user = User.objects.filter(kingBB = request.Post['kingBB'])
@@ -118,7 +122,7 @@ def Login(request):
 
 
 
-
+@csrf_exempt
 def Apply(request):
     # try:
     #     user = User.objects.get(student_id = 2012130419)
