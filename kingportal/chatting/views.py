@@ -18,6 +18,7 @@ def Main(request):
 def Chat(request):
     # try:
     if request.method == 'POST':
+        print(request.POST)
         form = ChatsForm(request.POST)
         one_chat = form.save(commit=False)
         # one_chat.content = request.POST['content']
