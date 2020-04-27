@@ -1,21 +1,71 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseNotFound, JsonResponse
 from .models import User, ApplyList
+import json
 # apply_list = ApplyList.objects.create()
 # apply_list.save()
 # Create your views here.
-def analyze(entire_gpa, target_gpa):
-    entire_gpa_list = entire_gpa.split(',')
-    entire_gpa_list.remove('')
-    entire_gpa_list = list(map(float, entire_gpa_list))
-    entire_gpa_list.sort(reverse=True)
+def convert_to_float(x):
+    return float(x[:4])
+def analyze(entire_student_info, target_student_info):
+    entire_student_list = entire_student_info.split(',')
+    try:
+       index = entire_student_list.index('')
+       entire_student_list.remove('')
+    except:
+        pass
+    print('entire_student_list: ', entire_student_list)
+    # entire_student_list.remove('')
     
+    # entire_gpa_list = list(map(float, entire_gpa_list))
+    entire_student_list.append(target_student_info)
+    entire_student_list = sorted(entire_student_list, reverse=True, key=convert_to_float)
+
+    is_swapped = False
+    index = 0
+    count = 0
+    gpa_sum = 0
+
+    # for i in range(len(entire_student_list)):
+    #     if float(target_student_info[:4]) > float(entire_student_list[i][:4]) and is_swapped == False:
+    #         is_swapped = True
+    #         temp = entire_student_list[i]
+    #         entire_student_list[i] = target_student_info
+    #         entire_student_list.append(temp)
+
+    #         index = count
+    #         gpa_sum += float(entire_student_list[i][:4])
+
+    #     count += 1
+
+    # if is_swapped == False:
+    #     entire_student_list.append(target_student_info)
+    
+    # gpa_sum += float(target_student_info[:4])
+    # count += 1
+
+    entire_student_info = ','.join(entire_student_list)
+
+    for i in range(len(entire_student_list)):
+        current_gpa = float(entire_student_list[i][:4])
+        target_gpa = float(target_student_info[:4])
+
+        count+= 1
+        gpa_sum += current_gpa
+        if current_gpa == target_gpa:
+            index = count
+        entire_student_list[i] = entire_student_list[i].split(':')
+    print('entire_list : ', entire_student_list)
+
     data = {
-        'index' : entire_gpa_list.index(float(target_gpa)) + 1,
-        'applicants_number' : len(entire_gpa_list),
-        'average_gpa' : round(sum(entire_gpa_list, 0.0) / len(entire_gpa_list),2)
+        'index' : index,
+        'applicants_number' : count,
+        'average_gpa' : round(gpa_sum / count, 2),
+        'entire_student_list' : entire_student_list,
     }
-    return data
+    print('data',  data)
+    print('entier_student_info :', entire_student_info)
+    return data, entire_student_info
 
 def Login(request):
     # user = User(student_id=request.Post['kingBB'])
@@ -46,6 +96,8 @@ def Login(request):
 
         apply_list = ApplyList.objects.get()
         current_value = getattr(apply_list, apply_major)
+
+
         setattr(apply_list, apply_major, current_value + f'{average_gpa},')
 
         apply_list.save()
@@ -97,23 +149,50 @@ def Apply(request):
 
     user.apply_count += 1
 
+    # 지원자 학점
     # average_gpa = request.Post['average_gpa']
-    average_gpa = '2.95'
+    average_gpa = '4.30'
 
+    # 지원전공
     # apply_major = request.Post['apply_major']
-    apply_major = 'philosophy'
+    apply_major = 'geographic_education'
+
+    # 본 전공
+    # main_major = request.Post['main_major']
+    main_major = '심리학과'
+
+    # 학번
+    # student_id = request.Post['student_id']
+    student_id = '2015130419'
 
     apply_list = ApplyList.objects.get()
-    current_value = getattr(apply_list, apply_major)
-    setattr(apply_list, apply_major, current_value + f'{average_gpa},')
+    # current_value = getattr(apply_list, apply_major)
+
+    # entire_gpa = current_value + f'{average_gpa}:{student_id}:{apply_major}:{main_major},'
+    target_student_info = f'{average_gpa}:{student_id[:4]}:{apply_major}:{main_major}'
+    entire_student_info = getattr(apply_list, apply_major)
+    # doublemajor_info = {
+    #     'average_gpa' : average_gpa,
+    #     'entry_year' : student_id[:4],
+    #     'main_major' : main_major,
+    # }
+
+    # entire_gpa = current_value + json.dumps(doublemajor_info) + '\n'
+    # print('entire_gpa : ', entire_gpa)
+    # list = entire_gpa.split(',')
+    # print('list:', list)
+    # print('list : ', json.loads(list[0]))
+    
+    # setattr(apply_list, apply_major, entire_gpa)
+    data, entire_student_info = analyze(entire_student_info, target_student_info)
+    setattr(apply_list, apply_major, entire_student_info)
 
     apply_list.save()
     user.save()
 
-    entire_gpa = getattr(apply_list, apply_major)
-    data = analyze(entire_gpa.strip(), average_gpa)
-    return JsonResponse(data, status=200)
-
+    print('data: ', data)
+    return JsonResponse(data, status=200, json_dumps_params={'ensure_ascii': False})
+    # return HttpResponse(status=200)
 
 
 
