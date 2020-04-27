@@ -1,10 +1,20 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseNotFound, JsonResponse
 from .models import User, ApplyList
+from django.views.decorators.csrf import csrf_exempt
 import json
 # apply_list = ApplyList.objects.create()
 # apply_list.save()
 # Create your views here.
+@csrf_exempt
+def Test(request):
+    print(request.POST)
+    student_id = request.POST['student_id']
+    data = {
+        'student_id' : student_id,
+    }
+    return JsonResponse(data, status=200)
+
 def convert_to_float(x):
     return float(x[:4])
 def analyze(entire_student_info, target_student_info):
@@ -67,6 +77,7 @@ def analyze(entire_student_info, target_student_info):
     print('entier_student_info :', entire_student_info)
     return data, entire_student_info
 
+@csrf_exempt
 def Login(request):
     # user = User(student_id=request.Post['kingBB'])
     # check_user = User.objects.filter(kingBB = request.Post['kingBB'])
@@ -111,7 +122,7 @@ def Login(request):
 
 
 
-
+@csrf_exempt
 def Apply(request):
     # try:
     #     user = User.objects.get(student_id = 2012130419)
@@ -151,7 +162,7 @@ def Apply(request):
 
     # 지원자 학점
     # average_gpa = request.Post['average_gpa']
-    average_gpa = '4.30'
+    average_gpa = '3.10'
 
     # 지원전공
     # apply_major = request.Post['apply_major']
