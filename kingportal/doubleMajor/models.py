@@ -7,6 +7,7 @@ class User(models.Model):
     apply_count = models.IntegerField(default=0, validators=[
         MaxValueValidator(3)
     ])
+    apply_major_list = models.TextField()
 
     def __str__(self):
         return self.student_id
