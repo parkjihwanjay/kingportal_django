@@ -240,7 +240,6 @@ def Apply(request):
     if(getattr(user, 'apply_count')>=3):
         return HttpResponse('3번까지 지원하실 수 있습니다 ㅜ', status=400)
 
-    user.apply_count += 1
 
     # 지원자 학점
     # average_gpa = request.Post['average_gpa']
@@ -248,12 +247,18 @@ def Apply(request):
 
     # 지원전공
     # apply_major = request.Post['apply_major_en']
-    apply_major = 'psychology'
-    # # apply_major_ko = request.Post['apply_major_ko']
-    apply_major_en = 'geographic_education'
+    apply_major = 'geographic_education'
+
+    # apply_major_ko = request.Post['apply_major_ko']
     apply_major_ko = '지리교육과'
 
-    user.apply_major_list = user.apply_major_list + f'{apply_major_en}:{apply_major_ko},'
+    print('apply_list : ', user.apply_major_list)
+    if user.apply_major_list.find(apply_major) > -1:
+        return HttpResponse('이미 지원하신 전공입니다.', status=400)
+
+    user.apply_major_list = user.apply_major_list + f'{apply_major}:{apply_major_ko},'
+
+    user.apply_count += 1
 
     # 본 전공
     # main_major = request.Post['main_major']
@@ -283,6 +288,7 @@ def Apply(request):
     
     # setattr(apply_list, apply_major, entire_gpa)
     data, entire_student_info = analyze(entire_student_info, target_student_info)
+    data['apply_major'] = apply_major_ko
     setattr(apply_list, apply_major, entire_student_info)
 
     apply_list.save()
