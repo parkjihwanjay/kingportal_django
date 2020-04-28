@@ -160,12 +160,19 @@ def Login(request):
 
 @csrf_exempt
 def getInfo(request):
-    try:
-        # user = User.objects.get(student_id = '2008130419')
-        student_id = request.POST['student_id'].strip()
-        user = User.objects.get(student_id = student_id)
-    except:
-        return JsonResponse({'info': []}, status=200)
+    print(request.POST)
+    student_id = request.POST['student_id'].strip()
+    print('student_id : ', student_id)
+    user = User.objects.get(student_id = student_id)
+    print('user :', user)
+    # try:
+    #     # user = User.objects.get(student_id = '2008130419')
+    #     student_id = request.POST['student_id'].strip()
+    #     print('student_id : ', student_id)
+    #     user = User.objects.get(student_id = student_id)
+    #     print('user :', user)
+    # except:
+    #     return JsonResponse({'info': []}, status=200)
     apply_major_list = user.apply_major_list.split(',')
     # "geographic_education, 지리교육과"
     if len(apply_major_list) == 0:
@@ -173,28 +180,26 @@ def getInfo(request):
     # user = User.objects.get(request.POST['student_id'])
 
     # 지원자 학점
-    # average_gpa = request.POST['average_gpa']
-    average_gpa = '3.10'
+    average_gpa = request.POST['average_gpa']
+    # average_gpa = '3.10'
 
     # 지원전공
-    # apply_major = request.POST['apply_major_en']
-    apply_major = 'geographic_education'
-    # # apply_major_ko = request.POST['apply_major_ko']
-    apply_major_en = 'geographic_education'
-    apply_major_ko = '지리교육과'
+    # apply_major = request.POST['apply_major']
+    # apply_major = 'geographic_education'
+    # apply_major_ko = request.POST['apply_major_ko']
 
     # user.apply_major_list = user.apply_major_list + f'apply_major_en:apply_major_ko'
 
     # 본 전공
     # main_major = request.POST['main_major']
-    main_major = '심리학과'
+    # main_major = '심리학과'
 
     # 학번
     # student_id = request.POST['student_id']
     # student_id = '2015130419'
 
     apply_list = ApplyList.objects.get()
-    target_student_info = f'{average_gpa}:{student_id[:4]}:{apply_major}:{main_major}'
+    target_student_info = f'{average_gpa}'
 
     final_info_list = []
 
