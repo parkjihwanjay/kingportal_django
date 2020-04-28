@@ -154,7 +154,7 @@ def Login(request):
 @csrf_exempt
 def getInfo(request):
     try:
-        user = User.objects.get(student_id = 2012130419)
+        user = User.objects.get(student_id = '2008130419')
     except:
         return JsonResponse({'info' : []}, status=200)
     apply_major_list = user.apply_major_list.split(',')
@@ -227,10 +227,10 @@ def Apply(request):
 
     # 지원전공
     # apply_major = request.Post['apply_major_en']
-    apply_major = 'physics'
+    apply_major = 'media'
 
     # apply_major_ko = request.Post['apply_major_ko']
-    apply_major_ko = '물리학'
+    apply_major_ko = '미디어학과'
 
     print('apply_list : ', user.apply_major_list)
     if user.apply_major_list.find(apply_major) > -1:
