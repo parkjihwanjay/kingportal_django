@@ -161,7 +161,9 @@ def Login(request):
 @csrf_exempt
 def getInfo(request):
     try:
-        user = User.objects.get(student_id = '2008130419')
+        # user = User.objects.get(student_id = '2008130419')
+        student_id = request.POST['student_id'].strip()
+        user = User.objects.get(student_id = student_id)
     except:
         return JsonResponse({'info': []}, status=200)
     apply_major_list = user.apply_major_list.split(',')
@@ -189,7 +191,7 @@ def getInfo(request):
 
     # 학번
     # student_id = request.POST['student_id']
-    student_id = '2015130419'
+    # student_id = '2015130419'
 
     apply_list = ApplyList.objects.get()
     target_student_info = f'{average_gpa}:{student_id[:4]}:{apply_major}:{main_major}'
@@ -217,13 +219,14 @@ def getInfo(request):
 @csrf_exempt
 def Apply(request):
     print(request.POST)
+    student_id = request.POST['student_id'].strip()
     try:
-        user = User.objects.get(student_id=request.POST['student_id'])
+        user = User.objects.get(student_id=student_id)
         # user = User.objects.get(student_id = '2008130419')
         # 진행
     except:
         # 회원가입 후 진행
-        user = User(student_id=request.POST['student_id'])
+        user = User(student_id=student_id)
         # user = User(student_id='2008130419')
         user.save()
 
@@ -245,8 +248,7 @@ def Apply(request):
     if user.apply_major_list.find(apply_major) > -1:
         return HttpResponse('이미 지원하신 전공입니다.', status=400)
 
-    user.apply_major_list = user.apply_major_list + \
-        f'{apply_major}:{apply_major_ko},'
+    user.apply_major_list = user.apply_major_list + f'{apply_major}:{apply_major_ko},'
 
     user.apply_count += 1
 
@@ -255,7 +257,7 @@ def Apply(request):
     # main_major = '심리학과'
 
     # 학번
-    student_id = request.POST['student_id']
+    # student_id = request.POST['student_id']
     # student_id = '2015130419'
 
     apply_list = ApplyList.objects.get()
