@@ -151,9 +151,12 @@ def Login(request):
         return JsonResponse(data, status=200)
     except:
         return HttpResponse(status=400)    
-
+@csrf_exempt
 def getInfo(request):
-    user = User.objects.get(student_id = 2012130419)
+    try:
+        user = User.objects.get(student_id = 2012130419)
+    except:
+        return JsonResponse({'info' : []}, status=200)
     apply_major_list = user.apply_major_list.split(',')
     # "geographic_education, 지리교육과"
     if len(apply_major_list) == 0:
@@ -205,41 +208,18 @@ def getInfo(request):
 
 @csrf_exempt
 def Apply(request):
-    # try:
-    #     user = User.objects.get(student_id = 2012130419)
-
-    #     if(getattr(user, 'apply_count')>=3):
-    #         return HttpResponse(status=400, message='3번까지 지원하실 수 있습니다 ㅜ')
-
-    #     user.apply_count += 1
-
-    #     # average_gpa = request.Post['average_gpa']
-    #     average_gpa = '3.75'
-
-    #     # apply_major = request.Post['apply_major']
-    #     apply_major = 'psychology'
-
-    #     apply_list = ApplyList.objects.get()
-    #     current_value = getattr(apply_list, apply_major)
-    #     setattr(apply_list, apply_major, current_value + f'{average_gpa},')
-
-    #     apply_list.save()
-    #     user.save()
-
-    #     # getattr(apply_list, apply_major), average_gpa
-    #     entire_gpa = getattr(apply_list, apply_major)
-    #     index = analyze(entire_gpa, average_gpa)
-
-    #     return HttpResponse(status=200)
-    # except:
-    #     return HttpResponse(status=400)    
-
-    user = User.objects.get(student_id = 2012130419)
-    # user = User.objects.get(request.Post['student_id'])
+    try:
+        # user = User.objects.get(student_id = request.Post['student_id'])
+        user = User.objects.get(student_id = '2008130419')
+        # 진행
+    except:
+        # 회원가입 후 진행
+        # user = User(student_id=request.Post['student_id'])
+        user = User(student_id='2008130419')
+        user.save()
 
     if(getattr(user, 'apply_count')>=3):
         return HttpResponse('3번까지 지원하실 수 있습니다 ㅜ', status=400)
-
 
     # 지원자 학점
     # average_gpa = request.Post['average_gpa']
@@ -247,10 +227,10 @@ def Apply(request):
 
     # 지원전공
     # apply_major = request.Post['apply_major_en']
-    apply_major = 'geographic_education'
+    apply_major = 'physics'
 
     # apply_major_ko = request.Post['apply_major_ko']
-    apply_major_ko = '지리교육과'
+    apply_major_ko = '물리학'
 
     print('apply_list : ', user.apply_major_list)
     if user.apply_major_list.find(apply_major) > -1:
@@ -271,22 +251,9 @@ def Apply(request):
     apply_list = ApplyList.objects.get()
     # current_value = getattr(apply_list, apply_major)
 
-    # entire_gpa = current_value + f'{average_gpa}:{student_id}:{apply_major}:{main_major},'
     target_student_info = f'{average_gpa}:{student_id[:4]}:{apply_major}:{main_major}'
     entire_student_info = getattr(apply_list, apply_major)
-    # doublemajor_info = {
-    #     'average_gpa' : average_gpa,
-    #     'entry_year' : student_id[:4],
-    #     'main_major' : main_major,
-    # }
 
-    # entire_gpa = current_value + json.dumps(doublemajor_info) + '\n'
-    # print('entire_gpa : ', entire_gpa)
-    # list = entire_gpa.split(',')
-    # print('list:', list)
-    # print('list : ', json.loads(list[0]))
-    
-    # setattr(apply_list, apply_major, entire_gpa)
     data, entire_student_info = analyze(entire_student_info, target_student_info)
     data['apply_major'] = apply_major_ko
     setattr(apply_list, apply_major, entire_student_info)
