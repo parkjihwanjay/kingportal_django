@@ -18,6 +18,7 @@ def Main(request):
 def Chat(request):
     # try:
     if request.method == 'POST':
+        print(request.POST)
         form = ChatsForm(request.POST)
         one_chat = form.save(commit=False)
         # one_chat.content = request.POST['content']
@@ -39,7 +40,6 @@ def Chat(request):
             }
             json_course_chats.append(append_chat)
         returnjson = json.dumps(json_course_chats)
-        print(returnjson)
         # return JsonResponse(returnjson, status=200)
         return HttpResponse(returnjson, content_type=u"application/json; charset=utf-8", status=200)
     # except:
