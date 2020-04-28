@@ -187,7 +187,8 @@ def getInfo(request):
     final_info_list = []
 
     for apply_major in apply_major_list:
-        # "geographic_education:지리교육과"
+        if apply_major == '':
+            continue
         apply_major = apply_major.split(':')
         entire_student_info = getattr(apply_list, apply_major[0])
         info = only_analyze(entire_student_info, target_student_info)
@@ -247,7 +248,7 @@ def Apply(request):
 
     # 지원전공
     # apply_major = request.Post['apply_major_en']
-    apply_major = 'geographic_education'
+    apply_major = 'psychology'
     # # apply_major_ko = request.Post['apply_major_ko']
     apply_major_en = 'geographic_education'
     apply_major_ko = '지리교육과'
