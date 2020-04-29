@@ -7,7 +7,6 @@ import json
 # apply_list.save()
 # Create your views here.
 
-
 def convert_to_float(x):
     return float(x[:4])
 
