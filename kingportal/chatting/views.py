@@ -54,6 +54,9 @@ def Nick(request):
         chat_nicks = Nicks.objects.filter(
             name=request.POST['name'])
         print(chat_nicks)
+        print(len(chat_nicks))
+        if len(chat_nicks) > 0:
+            return HttpResponse('중복', status=200)
         form = NicksForm(request.POST)
         one_nick = form.save(commit=False)
         one_nick.sid = str(request.POST['sid'])
