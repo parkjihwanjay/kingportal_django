@@ -3,8 +3,8 @@ from django.http import HttpResponse, HttpResponseNotFound, JsonResponse
 from .models import User, ApplyList
 from django.views.decorators.csrf import csrf_exempt
 import json
-# apply_list = ApplyList.objects.create()
-# apply_list.save()
+apply_list = ApplyList.objects.create()
+apply_list.save()
 # Create your views here.
 
 
@@ -163,7 +163,7 @@ def getInfo(request):
     print(request.POST)
     student_id = request.POST['student_id'].strip()
     print('student_id : ', student_id)
-    user = User.objects.get(student_id = student_id)
+    user = User.objects.get(student_id=student_id)
     print('user :', user)
     # try:
     #     # user = User.objects.get(student_id = '2008130419')
@@ -253,7 +253,8 @@ def Apply(request):
     if user.apply_major_list.find(apply_major) > -1:
         return HttpResponse('이미 지원하신 전공입니다.', status=400)
 
-    user.apply_major_list = user.apply_major_list + f'{apply_major}:{apply_major_ko},'
+    user.apply_major_list = user.apply_major_list + \
+        f'{apply_major}:{apply_major_ko},'
 
     user.apply_count += 1
 
