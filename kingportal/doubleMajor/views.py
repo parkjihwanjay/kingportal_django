@@ -136,13 +136,14 @@ def Login(request):
 
         user.apply_count += 1
 
-        # average_gpa = request.POST['average_gpa']
-        average_gpa = '3.75'
+        average_gpa = request.POST['average_gpa']
+        # average_gpa = '3.75'
 
-        # apply_major = request.POST['apply_major']
-        apply_major = 'philosophy'
+        apply_major = request.POST['apply_major']
+        # apply_major = 'philosophy'
 
         apply_list = ApplyList.objects.get()
+        # print(apply_list)
         current_value = getattr(apply_list, apply_major)
 
         setattr(apply_list, apply_major, current_value + f'{average_gpa},')
@@ -162,7 +163,7 @@ def getInfo(request):
     print(request.POST)
     student_id = request.POST['student_id'].strip()
     print('student_id : ', student_id)
-    user = User.objects.get(student_id = student_id)
+    user = User.objects.get(student_id=student_id)
     print('user :', user)
     # try:
     #     # user = User.objects.get(student_id = '2008130419')
@@ -252,7 +253,8 @@ def Apply(request):
     if user.apply_major_list.find(apply_major) > -1:
         return HttpResponse('이미 지원하신 전공입니다.', status=400)
 
-    user.apply_major_list = user.apply_major_list + f'{apply_major}:{apply_major_ko},'
+    user.apply_major_list = user.apply_major_list + \
+        f'{apply_major}:{apply_major_ko},'
 
     user.apply_count += 1
 
@@ -265,6 +267,7 @@ def Apply(request):
     # student_id = '2015130419'
 
     apply_list = ApplyList.objects.get()
+    print(apply_list)
     # current_value = getattr(apply_list, apply_major)
 
     target_student_info = f'{average_gpa}:{student_id[:4]}:{apply_major}:{main_major}'
