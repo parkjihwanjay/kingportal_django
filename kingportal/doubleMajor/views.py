@@ -7,6 +7,7 @@ import json
 # apply_list.save()
 # Create your views here.
 
+
 def convert_to_float(x):
     return float(x[:4])
 
@@ -269,7 +270,8 @@ def Apply(request):
     if user.apply_major_list.find(apply_major) > -1:
         return HttpResponse('이미 지원하신 전공입니다.', status=400)
 
-    user.apply_major_list = user.apply_major_list + f'{apply_major}:{apply_major_ko},'
+    user.apply_major_list = user.apply_major_list + \
+        f'{apply_major}:{apply_major_ko},'
     apply_major_list = user.apply_major_list.split(',')
 
     user.apply_count += 1
@@ -279,7 +281,7 @@ def Apply(request):
     # main_major = '심리학과'
 
     # 학번
-    student_id = request.POST['student_id']
+    # student_id = request.POST['student_id'].strip()
     # student_id = '2015130419'
 
     apply_list = ApplyList.objects.get()
@@ -288,7 +290,7 @@ def Apply(request):
 
     target_student_info = f'{average_gpa}:{student_id[:4]}:{apply_major}:{main_major}'
     entire_student_info = getattr(apply_list, apply_major)
-    print('apply_major: ',apply_major)
+    print('apply_major: ', apply_major)
     entire_student_list = entire_student_info.split(',')
     try:
         index = entire_student_list.index('')
