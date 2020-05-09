@@ -18,7 +18,7 @@ def Main(request):
 def Chat(request):
     # try:
     if request.method == 'POST':
-        print(request.POST)
+        # print(request.POST)
         form = ChatsForm(request.POST)
         one_chat = form.save(commit=False)
         # one_chat.content = request.POST['content']
@@ -53,8 +53,8 @@ def Nick(request):
         # duplicate check
         chat_nicks = Nicks.objects.filter(
             name=request.POST['name'])
-        print(chat_nicks)
-        print(len(chat_nicks))
+        # print(chat_nicks)
+        # print(len(chat_nicks))
         if len(chat_nicks) > 0:
             return HttpResponse('중복', status=200)
         form = NicksForm(request.POST)
