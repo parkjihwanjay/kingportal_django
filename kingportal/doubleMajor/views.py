@@ -9,15 +9,19 @@ import json
 # apply_list.save()
 # Create your views here.
 
+@csrf_exempt
 def hashing(request):
     try:
         check_user = User.objects.get(student_id=request.POST['student_id'])
-        if request.POST['hash_token'] != check_user['hash_token']:
+        if request.POST['hash_token'] != check_user.hash_token:
             return HttpResponse('요청 거부', status=404)
+        return HttpResponse('인증 성공', status=200)
         # 진행
     except:
+        if request.POST['hash_token']:
+            return HttpResponse('요청 거부', status=404)
         # 회원가입 후 진행
-        user = User.object.creates(
+        user = User.objects.create(
             student_id=request.POST['student_id'],
             hash_token=make_password(time.time())
         )
