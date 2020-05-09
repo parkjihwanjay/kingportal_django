@@ -26,6 +26,7 @@ SECRET_KEY = '9ngm9ci%_6+p@1e(*l$6#&4f)8s5lkezjswt3ut3$+z6r+c5)('
 DEBUG = True
 
 ALLOWED_HOSTS = [
+    '127.0.0.1',
     'db.ku-nearby.com',
     'kingportal-env.eba-3rspbg2s.ap-northeast-2.elasticbeanstalk.com',
 ]
