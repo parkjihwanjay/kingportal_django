@@ -12,21 +12,28 @@ import json
 @csrf_exempt
 def hashing(request):
     try:
+        # 우선 정보가 있는지 체크
         check_user = User.objects.get(student_id=request.POST['student_id'])
+        # 정보가 있는데, 해시토큰이 없다면
+        if 'hash_token' not in request.POST:
+            # 해시토큰을 내려준다
+            return HttpResponse(check_user.hash_token, status=404)
+        # 정보가 있고, 해시 토큰이 있다면 체크한다
         if request.POST['hash_token'] != check_user.hash_token:
             return HttpResponse('요청 거부', status=404)
         return HttpResponse('인증 성공', status=200)
         # 진행
     except:
-        if request.POST['hash_token']:
+        # 정보가 없는데 해시토큰과 함께 리퀘스트가 오면 그냥 거부
+        if 'hash_token' in request.POST:
             return HttpResponse('요청 거부', status=404)
-        # 회원가입 후 진행
+        # 정보가 없이 sid만 리퀘스트로 오면 만들어서 내려줌
         user = User.objects.create(
             student_id=request.POST['student_id'],
             hash_token=make_password(time.time())
         )
         user.save()
-        return HttpResponse('로그인 성공', status=200)
+        return HttpResponse(user.hash_token, status=200)
 
 def convert_to_float(x):
     return float(x[:4])
