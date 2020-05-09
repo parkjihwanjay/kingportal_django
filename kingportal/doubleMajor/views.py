@@ -2,26 +2,27 @@ from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseNotFound, JsonResponse
 from .models import User, ApplyList
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.hashers import make_password
+import time
 import json
 # apply_list = ApplyList.objects.create()
 # apply_list.save()
 # Create your views here.
 
-# def hashing(request):
-#     try:
-#         check_user = User.objects.get(student_id=request.POST['student_id'])
-#         if request.POST['hash_token'] == check_user['hash_token']:
-#             return 
-#         # 진행
-#     except:
-#         # 회원가입 후 진행
-#         user = User.object.creates(
-#             student_id=request.POST['student_id'],
-#             hash_token=request.POST['hash_token']
-#         )
-#         user.save()
-
-
+def hashing(request):
+    try:
+        check_user = User.objects.get(student_id=request.POST['student_id'])
+        if request.POST['hash_token'] != check_user['hash_token']:
+            return HttpResponse('요청 거부', status=404)
+        # 진행
+    except:
+        # 회원가입 후 진행
+        user = User.object.creates(
+            student_id=request.POST['student_id'],
+            hash_token=make_password(time.time())
+        )
+        user.save()
+        return HttpResponse('로그인 성공', status=200)
 
 def convert_to_float(x):
     return float(x[:4])
