@@ -135,51 +135,6 @@ def only_analyze(entire_student_info, target_student_info):
     # print('entier_student_info :', entire_student_info)
     return data
 
-
-@csrf_exempt
-def Login(request):
-    # user = User(student_id=request.POST['kingBB'])
-    # check_user = User.objects.filter(kingBB = request.POST['kingBB'])
-    # check_user = User.objects.filter(kingBB = '/9j/4AAQSkZJRgABAAEAlgCWAAD//')
-
-    try:
-        check_user = User.objects.get(student_id=request.POST['student_id'])
-        # 진행
-    except:
-        # 회원가입 후 진행
-        user = User(student_id=request.POST['student_id'])
-        user.save()
-
-    try:
-        user = User.objects.get(student_id=request.POST['student_id'])
-
-        if(getattr(user, 'apply_count') >= 3):
-            return HttpResponse('3번까지 지원하실 수 있습니다 ㅜ', status=400)
-
-        user.apply_count += 1
-
-        average_gpa = request.POST['average_gpa']
-        # average_gpa = '3.75'
-
-        apply_major = request.POST['apply_major']
-        # apply_major = 'philosophy'
-
-        apply_list = ApplyList.objects.get()
-        # print(apply_list)
-        current_value = getattr(apply_list, apply_major)
-
-        setattr(apply_list, apply_major, current_value + f'{average_gpa},')
-
-        apply_list.save()
-        user.save()
-
-        entire_gpa = getattr(apply_list, apply_major)
-        data = analyze(entire_gpa.strip(), average_gpa)
-        return JsonResponse(data, status=200)
-    except:
-        return HttpResponse(status=400)
-
-
 @csrf_exempt
 def getInfo(request):
     # print(request.POST)
@@ -256,15 +211,15 @@ def Apply(request):
     student_id = request.POST['student_id'].strip()
     user = User.objects.get(student_id=student_id)
 
-    # try:
-    #     user = User.objects.get(student_id=student_id)
-    #     # user = User.objects.get(student_id = '2008130419')
-    #     # 진행
-    # except:
-    #     # 회원가입 후 진행
-    #     user = User(student_id=student_id)
-    #     # user = User(student_id='2008130419')
-    #     user.save()
+    try:
+        user = User.objects.get(student_id=student_id)
+        # user = User.objects.get(student_id = '2008130419')
+        # 진행
+    except:
+        # 회원가입 후 진행
+        user = User(student_id=student_id)
+        # user = User(student_id='2008130419')
+        user.save()
 
     if(getattr(user, 'apply_count') >= 3):
         return HttpResponse('3번까지 지원하실 수 있습니다 ㅜ', status=400)
