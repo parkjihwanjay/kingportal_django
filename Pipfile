@@ -9,6 +9,8 @@ verify_ssl = true
 django = "*"
 django-cryptography = "*"
 django-cors-headers = "*"
+wheel = "*"
+uwsgi = "*"
 
 [requires]
 python_version = "3.7"

@@ -7,6 +7,20 @@ import json
 # apply_list.save()
 # Create your views here.
 
+def hashing(student_id):
+    try:
+        check_user = User.objects.get(student_id=request.POST['student_id'])
+        if student_id
+        # 진행
+    except:
+        # 회원가입 후 진행
+        user = User.object.creates(
+            student_id=request.POST['student_id'],
+            hash_token=request.POST['hash_token']
+        )
+        user.save()
+
+
 
 def convert_to_float(x):
     return float(x[:4])

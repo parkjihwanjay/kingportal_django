@@ -3,6 +3,7 @@ from django.core.validators import MaxValueValidator
 
 # Create your models here.
 class User(models.Model):
+    hash_token = models.TextField()
     student_id = models.CharField(max_length=50, unique=True)
     apply_count = models.IntegerField(default=0, validators=[
         MaxValueValidator(3)
