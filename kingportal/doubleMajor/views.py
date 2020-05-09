@@ -17,7 +17,7 @@ def hashing(request):
         # 정보가 있는데, 해시토큰이 없다면
         if 'hash_token' not in request.POST:
             # 해시토큰을 내려준다
-            return HttpResponse(check_user.hash_token, status=404)
+            return HttpResponse(check_user.hash_token, status=200)
         # 정보가 있고, 해시 토큰이 있다면 체크한다
         if request.POST['hash_token'] != check_user.hash_token:
             return HttpResponse('요청 거부', status=404)
