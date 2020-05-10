@@ -15,7 +15,6 @@ import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
 
@@ -26,8 +25,8 @@ SECRET_KEY = '9ngm9ci%_6+p@1e(*l$6#&4f)8s5lkezjswt3ut3$+z6r+c5)('
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    '127.0.0.1',
-    'localhost',
+    # '127.0.0.1',
+    # 'localhost',
     'db.ku-nearby.com',
     'kingportal-env.eba-3rspbg2s.ap-northeast-2.elasticbeanstalk.com',
 ]
@@ -36,6 +35,7 @@ ALLOWED_HOSTS = [
 # Application definition
 
 INSTALLED_APPS = [
+    'corsheaders',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -44,7 +44,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'chatting',
     'doubleMajor',
-    'corsheaders',
 ]
 
 MIDDLEWARE = [
@@ -128,7 +127,8 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+CORS_ALLOW_CREDENTIALS = True
 CORS_ORIGIN_WHITELIST = (
-    # 'http://localhost:3000',
+    'http://localhost:3000',
     'https://ku-nearby.com',
 )
