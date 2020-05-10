@@ -65,6 +65,6 @@ class ApplyList(models.Model):
     bio_system_science= models.TextField(default="", blank=True)
     health_environment_science= models.TextField(default="", blank=True)
     health_policy= models.TextField(default="", blank=True)
-    # computer_science= models.TextField(default="", blank=True)
+    computer_science= models.TextField(default="", blank=True)
     
 
