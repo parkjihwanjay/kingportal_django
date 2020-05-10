@@ -178,7 +178,7 @@ def getInfo(request):
     # user = User.objects.get(request.POST['student_id'])
 
     # 지원자 학점
-    average_gpa = request.POST['average_gpa']
+    average_gpa = round(float(request.POST['average_gpa']), 2)
     # average_gpa = '3.10'
 
     # 지원전공
