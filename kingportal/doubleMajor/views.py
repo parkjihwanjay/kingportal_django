@@ -36,7 +36,9 @@ def hashing(request):
         return HttpResponse(user.hash_token, status=200)
 
 def convert_to_float(x):
-    return float(x[:4])
+    y = x.split(':')
+    # print(float(y[0]))
+    return float(y[0])
 
 
 def analyze(entire_student_info, target_student_info):
