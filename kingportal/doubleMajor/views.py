@@ -17,16 +17,16 @@ def hashing(request):
         # 정보가 있는데, 해시토큰이 없다면
         if 'hash_token' not in request.POST:
             # 해시토큰을 내려준다
-            return HttpResponse(check_user.hash_token, status=200)
+            return HttpResponse(check_user.hash_token, status=404)
         # 정보가 있고, 해시 토큰이 있다면 체크한다
         if request.POST['hash_token'] != check_user.hash_token:
-            return HttpResponse('요청 거부', status=200)
+            return HttpResponse('요청 거부', status=404)
         return HttpResponse('인증 성공', status=200)
         # 진행
     except:
         # 정보가 없는데 해시토큰과 함께 리퀘스트가 오면 그냥 거부
         if 'hash_token' in request.POST:
-            return HttpResponse('요청 거부', status=200)
+            return HttpResponse('요청 거부', status=404)
         # 정보가 없이 sid만 리퀘스트로 오면 만들어서 내려줌
         user = User.objects.create(
             student_id=request.POST['student_id'],
@@ -40,14 +40,14 @@ def convert_to_float(x):
 
 
 def analyze(entire_student_info, target_student_info):
-    # print('entire_student_info : ', entire_student_info)
+    print('entire_student_info : ', entire_student_info)
     entire_student_list = entire_student_info.split(',')
     try:
         index = entire_student_list.index('')
         entire_student_list.remove('')
     except:
         pass
-    # print('entire_student_list: ', entire_student_list)
+    print('entire_student_list: ', entire_student_list)
     # entire_student_list.remove('')
 
     # entire_gpa_list = list(map(float, entire_gpa_list))
@@ -105,7 +105,7 @@ def analyze(entire_student_info, target_student_info):
 
 
 def only_analyze(entire_student_info, target_student_info):
-    # print('entire_student_info : ', entire_student_info)
+    print('entire_student_info : ', entire_student_info)
 
     entire_student_list = entire_student_info.split(',')
     try:
@@ -113,7 +113,7 @@ def only_analyze(entire_student_info, target_student_info):
         entire_student_list.remove('')
     except:
         pass
-    # print('entire_student_list: ', entire_student_list)
+    print('entire_student_list: ', entire_student_list)
 
     entire_student_list = sorted(
         entire_student_list, reverse=True, key=convert_to_float)
@@ -124,19 +124,19 @@ def only_analyze(entire_student_info, target_student_info):
     gpa_sum = 0
 
     # entire_student_info = ','.join(entire_student_list)
-    # print('entire_student_list : ', entire_student_list)
-    # print('target_student_info : ', target_student_info)
+    print('entire_student_list : ', entire_student_list)
+    print('target_student_info : ', target_student_info)
 
     for i in range(len(entire_student_list)):
         current_gpa = float(entire_student_list[i][:4])
-        target_gpa = float(target_student_info[:4])
+        target_gpa = target_student_info
 
         count += 1
         gpa_sum += current_gpa
         if current_gpa == target_gpa:
             index = count
         entire_student_list[i] = entire_student_list[i].split(':')
-    # print('entire_list : ', entire_student_list)
+    print('entire_list : ', entire_student_list)
 
     data = {
         'index': index,
@@ -144,7 +144,7 @@ def only_analyze(entire_student_info, target_student_info):
         'average_gpa': round(gpa_sum / count, 2),
         'entire_student_list': entire_student_list,
     }
-    # print('data',  data)
+    print('data',  data)
     # print('entier_student_info :', entire_student_info)
     return data
 
@@ -166,9 +166,9 @@ def getInfo(request):
     # try:
     #     # user = User.objects.get(student_id = '2008130419')
     #     student_id = request.POST['student_id'].strip()
-    #     # print('student_id : ', student_id)
+    #     print('student_id : ', student_id)
     #     user = User.objects.get(student_id = student_id)
-    #     # print('user :', user)
+    #     print('user :', user)
     # except:
     #     return JsonResponse({'info': []}, status=200)
     apply_major_list = user.apply_major_list.split(',')
@@ -178,7 +178,7 @@ def getInfo(request):
     # user = User.objects.get(request.POST['student_id'])
 
     # 지원자 학점
-    average_gpa = round(float(request.POST['average_gpa']), 2)
+    average_gpa = format(round(float(request.POST['average_gpa'].strip()), 2), '.2f')
     # average_gpa = '3.10'
 
     # 지원전공
@@ -197,20 +197,20 @@ def getInfo(request):
     # student_id = '2015130419'
 
     apply_list = ApplyList.objects.get()
-    target_student_info = f'{average_gpa}'
+    target_student_info = average_gpa
     final_info_list = []
     for apply_major in apply_major_list:
         if apply_major == '':
             continue
         apply_major = apply_major.split(':')
-        # print(apply_major)
+        print(apply_major)
         entire_student_info = getattr(apply_list, apply_major[0])
         info = only_analyze(entire_student_info, target_student_info)
         info['apply_major'] = apply_major[1]
 
         final_info_list.append(info)
 
-    # print('final_data: ', final_info_list)
+    print('final_data: ', final_info_list)
 
     data = {
         'info': final_info_list,
@@ -220,7 +220,7 @@ def getInfo(request):
 
 @csrf_exempt
 def Apply(request):
-    # print(request.POST)
+    print(request.POST)
     student_id = request.POST['student_id'].strip()
     user = User.objects.get(student_id=student_id)
 
@@ -238,7 +238,9 @@ def Apply(request):
         return HttpResponse('3번까지 지원하실 수 있습니다 ㅜ', status=400)
 
     # 지원자 학점
-    average_gpa = request.POST['average_gpa'].strip()
+    # average_gpa = request.POST['average_gpa'].strip()
+    average_gpa = format(round(float(request.POST['average_gpa'].strip()), 2), '.2f')
+
     # average_gpa = '3.10'
 
     # 지원전공
@@ -248,7 +250,7 @@ def Apply(request):
     apply_major_ko = request.POST['apply_major_ko']
     # apply_major_ko = '물리학'
 
-    # print('apply_list : ', user.apply_major_list)
+    print('apply_list : ', user.apply_major_list)
     if user.apply_major_list.find(apply_major) > -1:
         return HttpResponse('이미 지원하신 전공입니다.', status=400)
 
@@ -267,12 +269,12 @@ def Apply(request):
     # student_id = '2015130419'
 
     apply_list = ApplyList.objects.get()
-    # print(apply_list)
+    print(apply_list)
     # current_value = getattr(apply_list, apply_major)
 
     target_student_info = f'{average_gpa}:{student_id[:4]}:{apply_major}:{main_major}'
     entire_student_info = getattr(apply_list, apply_major)
-    # print('apply_major: ', apply_major)
+    print('apply_major: ', apply_major)
     entire_student_list = entire_student_info.split(',')
     try:
         index = entire_student_list.index('')
