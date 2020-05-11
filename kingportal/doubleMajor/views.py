@@ -36,7 +36,9 @@ def hashing(request):
         return HttpResponse(user.hash_token, status=200)
 
 def convert_to_float(x):
-    return float(x[:4])
+    y = x.split(':')
+    # print(float(y[0]))
+    return float(y[0])
 
 
 def analyze(entire_student_info, target_student_info):
@@ -52,7 +54,8 @@ def analyze(entire_student_info, target_student_info):
 
     # entire_gpa_list = list(map(float, entire_gpa_list))
     entire_student_list.append(target_student_info)
-    target_gpa = target_student_info[:4]
+    target_s_info = target_student_info.split(':')
+    target_gpa = target_student_info[0]
 
     # entire_student_list = sorted(
     #     entire_student_list, reverse=True, key=convert_to_float)
@@ -128,8 +131,10 @@ def only_analyze(entire_student_info, target_student_info):
     print('target_student_info : ', target_student_info)
 
     for i in range(len(entire_student_list)):
-        current_gpa = float(entire_student_list[i][:4])
-        target_gpa = target_student_info
+        entire_s_list = entire_student_list[i].split(':')
+        target_s_info = target_student_info.split(':')
+        current_gpa = float(entire_s_list[0])
+        target_gpa = float(target_s_info[0])
 
         count += 1
         gpa_sum += current_gpa
